@@ -9,15 +9,15 @@ import (
   "github.com/couchbaselabs/logg"
 )
 
-type ImageProcessing struct {
+type ConvertPdf struct {
 }
 
-func (s ImageProcessing) preprocess(ocrRequest *OcrRequest) error {
+func (c ConvertPdf) preprocess(ocrRequest *OcrRequest) error {
 
   // write bytes to a temp file
 
   tmpFileNameInput, err := createTempFileName()
-  tmpFileNameInput = fmt.Sprintf("%s.png", tmpFileNameInput)
+  tmpFileNameInput = fmt.Sprintf("%s.pdf", tmpFileNameInput)
   if err != nil {
     return err
   }
@@ -37,32 +37,30 @@ func (s ImageProcessing) preprocess(ocrRequest *OcrRequest) error {
 
   logg.LogTo(
     "PREPROCESSOR_WORKER",
-    "Image Processing on %s -> %s",
+    "Convert PDF on %s -> %s",
     tmpFileNameInput,
     tmpFileNameOutput,
   )
 
-  dir, errtest := os.Getwd()
-  logg.LogTo(
-    "PREPROCESSOR_WORKER",
-    "Current dir is %s",
-    dir,
-  )
-  if errtest != nil {
-    logg.LogFatal("Error running command: %s.  out: %s", errtest, dir)
-  }
-
-  out1, err1 := exec.Command(
-    "ls",
-  ).CombinedOutput()
-  if err != nil {
-    logg.LogFatal("Error running command: %s.  out: %s", err1, out1)
-  }
-  logg.LogTo("PREPROCESSOR_WORKER", "output: %v", string(out1))
+  // out, err := exec.Command(
+  //   "python",
+  //   "/opt/go/src/github.com/maiduchuy/image-processing/resizeimg.py",
+  //   tmpFileNameInput,
+  //   tmpFileNameOutput,
+  // ).CombinedOutput()
+  // if err != nil {
+  //   logg.LogFatal("Error running command: %s.  out: %s", err, out)
+  // }
+  // logg.LogTo("PREPROCESSOR_WORKER", "output: %v", string(out))
 
   out, err := exec.Command(
-    "python",
-    "/opt/go/src/github.com/maiduchuy/open-ocr/resizeimg.py",
+    "convert",
+    "-density",
+    "300",
+    "-depth",
+    "8",
+    "-alpha",
+    "Off",
     tmpFileNameInput,
     tmpFileNameOutput,
   ).CombinedOutput()
