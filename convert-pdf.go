@@ -42,17 +42,6 @@ func (c ConvertPdf) preprocess(ocrRequest *OcrRequest) error {
     tmpFileNameOutput,
   )
 
-  // out, err := exec.Command(
-  //   "python",
-  //   "/opt/go/src/github.com/maiduchuy/image-processing/resizeimg.py",
-  //   tmpFileNameInput,
-  //   tmpFileNameOutput,
-  // ).CombinedOutput()
-  // if err != nil {
-  //   logg.LogFatal("Error running command: %s.  out: %s", err, out)
-  // }
-  // logg.LogTo("PREPROCESSOR_WORKER", "output: %v", string(out))
-
   out, err := exec.Command(
     "convert",
     "-density",
